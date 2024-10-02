@@ -1,0 +1,26 @@
+% Meta-Material Antenna Simulation (Patch Antenna)
+
+% Define a small patch antenna to minimize memory usage
+patch = patchMicrostrip('Length', 0.02, 'Width', 0.03, ...
+                        'GroundPlaneLength', 0.04, 'GroundPlaneWidth', 0.04, ...
+                        'FeedOffset', [-0.0085, 0]);  % Adjust FeedOffset value
+
+% Define the substrate material (simplified)
+patch.Substrate = dielectric('Name', 'FR4', 'EpsilonR', 4.4, 'Thickness', 0.002);
+
+% Visualize the antenna structure (optional, can be skipped to save memory)
+% figure; show(patch); title('Simplified Meta-Material Patch Antenna');
+
+% Set frequency points (3 critical points for faster computation)
+freqRange = [2.4e9, 3.5e9, 5.0e9];  % Use only 3 frequencies for quicker results
+
+% Calculate S-parameters (reflection coefficient) at these points
+S = sparameters(patch, freqRange);
+
+% Plot S-parameters (S11)
+figure; rfplot(S); title('S11 Parameter for Meta-Material Antenna');
+
+% Radiation Pattern and Gain at 3.5 GHz (mid-range frequency)
+figure; pattern(patch, 3.5e9);
+gain = patternGain(patch, 3.5e9);
+disp(['Gain at 3.5 GHz: ', num2str(gain), ' dBi']);
